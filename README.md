@@ -5,7 +5,10 @@ Demo repository to setup mike.
 <!-- vscode-markdown-toc -->
 * 1. [Install](#Install)
 * 2. [Snippets](#Snippets)
-* 3. [Publishing Documentation](#PublishingDocumentation)
+* 3. [How-To](#How-To)
+* 4. [Publishing Documentation](#PublishingDocumentation)
+* 5. [Notes for Setting up Mike](#NotesforSettingupMike)
+* 6. [Credits](#Credits)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -38,7 +41,7 @@ mike set-default <VERSION-TAG>
 mike serve
 ```
 
-## How-To
+##  3. <a name='How-To'></a>How-To
 
 ```console
 # Create initial documentation
@@ -57,17 +60,17 @@ mike set-default latest
 mike deploy 0.2.0 latest --update-aliases -p
 ```
 
-##  3. <a name='PublishingDocumentation'></a>Publishing Documentation
+##  4. <a name='PublishingDocumentation'></a>Publishing Documentation
 
-The documentation can be found [here](https://schernhe.github.io/mike-demo/0.1.0/). Note that the URL follows the schema `.../mike-demo/<VERSION>/` and is not accessible without the version name.
+A new version of the documentation will be created every time you create a new Git tag.
+The created documentation can be found [here](https://schernhe.github.io/mike-demo/).
 
-## Notes for Setting up Mike
+##  5. <a name='NotesforSettingupMike'></a>Notes for Setting up Mike
 
 - Mike does not create a new MKDocs project. This needs to-be setup manually.
 - Mike does not include the material extras. This needs to-be added manually.
-- MKDocs themes need to-be integrated with Mike (css / js).
 
 
-## Credits
+##  6. <a name='Credits'></a>Credits
 - https://github.com/jimporter/mike
 - https://github.com/squidfunk/mkdocs-material-example-versioning
