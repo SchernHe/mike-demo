@@ -1,10 +1,15 @@
 [
   {
-    "version": "0.4.0",
-    "title": "0.4.0",
+    "version": "test_github_actions",
+    "title": "test_github_actions",
     "aliases": [
       "latest"
     ]
+  },
+  {
+    "version": "0.4.0",
+    "title": "0.4.0",
+    "aliases": []
   },
   {
     "version": "0.3.0",
