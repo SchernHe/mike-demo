@@ -4,8 +4,17 @@ permissions:
   contents: write
 jobs:
 
+  run-pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install-repository
+      - name: "Run pre-commit on all files"
+        run: poetry run pre-commit run --all-files --verbose
+
   run-formatting:
     runs-on: ubuntu-latest
+    needs: run-pre-commit
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install-repository
