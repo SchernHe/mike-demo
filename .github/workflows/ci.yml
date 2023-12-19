@@ -1,18 +1,23 @@
 name: ci
 on: push
-  # push:
-  #   tags:
-  #     - '[0-9]+.[0-9]+.[0-9]+'
 permissions:
   contents: write
 jobs:
-  deploy-pages:
-    # Image
+
+  run-unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install-repository
-      - name: Deploy to pages with mike
+      - name: 'Run unit-tests'
+        run: poetry run pytest tests/unit-tests
+
+  deploy-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install-repository
+      - name: 'Deploy to pages with mike'
         run: |
           git fetch origin gh-pages --depth=1
           poetry run mike deploy ${{  github.ref_name }} latest -u -p
