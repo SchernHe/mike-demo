@@ -22,8 +22,18 @@ jobs:
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: '1.7'
-      - name: Install package and deploy pages
+      - name: Setup poetry config to create .venv locally (for caching)
         run: |
-          poetry install
+          poetry config virtualenvs.create true --local
+          poetry config virtualenvs.in-project true --local
+      - uses: actions/cache@v3
+        name: Define a cache for the virtual environment based on the dependencies lock file
+        with:
+          path: ./.venv
+          key: venv-${{ hashFiles('poetry.lock') }}
+      - name: Install the project dependencies
+        run: poetry install
+      - name: Deploy to pages with mike
+        run: |
           git fetch origin gh-pages --depth=1
           poetry run mike deploy ${{  github.ref_name }} latest -u -p
