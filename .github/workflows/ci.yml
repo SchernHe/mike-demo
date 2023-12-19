@@ -24,6 +24,12 @@ jobs:
       - uses: ./.github/actions/install-repository
       - name: 'Run unit-tests'
         run: poetry run pytest tests/unit-tests --cov=src/ --cov-report=term:skip-covered --cov-report=xml:coverage.xml --junitxml=pytest-junit.xml
+      - name: 'Pytest coverage comment'
+        id: coverageComment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-xml-coverage-path: ./coverage.xml
+          junitxml-path: ./pytest-junit.xml
 
   deploy-pages:
     runs-on: ubuntu-latest
