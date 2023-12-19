@@ -11,28 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Set git configuration
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: '1.7'
-      - name: Setup poetry config to create .venv locally (for caching)
-        run: |
-          poetry config virtualenvs.create true --local
-          poetry config virtualenvs.in-project true --local
-      - uses: actions/cache@v3
-        name: Define a cache for the virtual environment based on the dependencies lock file
-        with:
-          path: ./.venv
-          key: venv-${{ hashFiles('poetry.lock') }}
-      - name: Install the project dependencies
-        run: poetry install
+      - uses: ./.github/actions/install-repository
       - name: Deploy to pages with mike
         run: |
           git fetch origin gh-pages --depth=1
