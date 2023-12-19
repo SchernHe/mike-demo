@@ -4,6 +4,18 @@ permissions:
   contents: write
 jobs:
 
+  run-formatting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install-repository
+      - name: 'Run black'
+        run: poetry run black src/
+      - name: 'Run flake8'
+        run: poetry run flake8 src/
+      - name: 'Run isort'
+        run: poetry run isort src/
+
   run-unit-tests:
     runs-on: ubuntu-latest
     steps:
