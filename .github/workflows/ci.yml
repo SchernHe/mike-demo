@@ -1,27 +1,63 @@
 name: ci
-on:
-  push:
-    tags:
-      - '[0-9]+.[0-9]+.[0-9]+'
+on: pull_request
 permissions:
   contents: write
 jobs:
-  deploy:
-    # Image
+
+  run-pre-commit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - uses: ./.github/actions/install-repository
+      - name: "Run pre-commit on all files"
+        run: poetry run pre-commit run --all-files --verbose
+
+  run-formatting:
+    runs-on: ubuntu-latest
+    needs: run-pre-commit
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install-repository
+      - name: 'Run black'
+        run: poetry run black src/
+      - name: 'Run flake8'
+        run: poetry run flake8 src/
+      - name: 'Run isort'
+        run: poetry run isort src/
+
+  run-unit-tests:
+    runs-on: ubuntu-latest
+    needs: run-formatting
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install-repository
+      - name: 'Run unit-tests'
+        run: poetry run pytest tests/unit-tests --cov=src/ --cov-report=term:skip-covered --cov-report=xml:coverage.xml --junitxml=pytest-junit.xml
+      - name: 'Pytest coverage comment'
+        id: coverageComment
+        uses: MishaKav/pytest-coverage-comment@main
         with:
-          python-version: 3.x
-      - uses: actions/cache@v2
-        with:
-          key: ${{ github.ref }}
-          path: .cache
-      - run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          pipx install poetry
-          poetry install
+          title: Unit-Test Coverage Report
+          junitxml-title: Unit-Test JUnit Report
+          junitxml-path: ./pytest-junit.xml
+          pytest-xml-coverage-path: ./coverage.xml
+          badge-title: Coverage
+          hide-badge: false
+          hide-report: false
+          create-new-comment: false
+          hide-comment: false
+          report-only-changed-files: false
+          remove-link-from-badge: false
+
+  deploy-pages:
+    runs-on: ubuntu-latest
+    needs: run-unit-tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install-repository
+      - name: 'Deploy to pages with mike'
+        run: |
           git fetch origin gh-pages --depth=1
-          poetry run mike deploy ${{  github.ref_name }} latest -u -p
+          poetry run mike deploy $(poetry version --short) latest -u -p
