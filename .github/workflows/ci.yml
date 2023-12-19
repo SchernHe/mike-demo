@@ -30,17 +30,17 @@ jobs:
         id: coverageComment
         uses: MishaKav/pytest-coverage-comment@main
         with:
+          title: Unit-Test Coverage Report
+          junitxml-title: Unit-Test JUnit Report
+          junitxml-path: ./pytest-junit.xml
           pytest-xml-coverage-path: ./coverage.xml
-          title: My Coverage Report Title
-          badge-title: My Badge Coverage Title
+          badge-title: Coverage
           hide-badge: false
           hide-report: false
           create-new-comment: false
           hide-comment: false
           report-only-changed-files: false
           remove-link-from-badge: false
-          junitxml-title: My JUnit Xml Summary Title
-          junitxml-path: ./pytest-junit.xml
 
   deploy-pages:
     runs-on: ubuntu-latest
@@ -51,4 +51,4 @@ jobs:
       - name: 'Deploy to pages with mike'
         run: |
           git fetch origin gh-pages --depth=1
-          poetry run mike deploy ${{  github.ref_name }} latest -u -p
+          poetry run mike deploy $(poetry version --short) latest -u -p
